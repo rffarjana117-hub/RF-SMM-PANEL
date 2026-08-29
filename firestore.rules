@@ -1,0 +1,72 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Public readable configs and services
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    match /tasks/{taskId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // User collections
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    match /auth_users/{userId} {
+      allow read, write: if true;
+    }
+
+    // Orders
+    match /orders/{orderId} {
+      allow read, write: if true;
+    }
+
+    // Deposits
+    match /deposit_requests/{depositId} {
+      allow read, write: if true;
+    }
+
+    // Task submissions
+    match /task_submissions/{subId} {
+      allow read, write: if true;
+    }
+
+    // Referral Commissions
+    match /referral_commissions/{commId} {
+      allow read, write: if true;
+    }
+
+    // User Notifications
+    match /user_notifications/{notifId} {
+      allow read, write: if true;
+    }
+
+    // Support threads & chat
+    match /support_threads/{threadId} {
+      allow read, write: if true;
+      match /messages/{msgId} {
+        allow read, write: if true;
+      }
+    }
+  }
+}
